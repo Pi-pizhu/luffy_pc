@@ -27,7 +27,7 @@
                         </p>
                         <p>忘记密码</p>
                     </div>
-                    <button class="login_btn">登录</button>
+                    <button class="login_btn" @click="loginhander">登录</button>
                     <p class="go_login" >没有账号 <span>立即注册</span></p>
                 </div>
                 <div class="inp" v-show="login_type==1">
@@ -55,7 +55,14 @@ export default {
   },
  
   methods:{
- 
+    loginhander() {
+        this.$axios.post(`${this.$settings.HOST}/user/login/`, {"username": this.username, "password": this.password}).then(response=>{
+            console.log(response.data);
+            localStorage.setItem("token", response.data.access)
+        }).catch(error=>{
+            console.log(error);
+        })
+    }
   },
  
 };
