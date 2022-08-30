@@ -22,7 +22,7 @@
                     <div id="geetest1"></div>
                     <div class="rember">
                         <p>
-                            <input type="checkbox" class="no" name="a"/>
+                            <input type="checkbox" class="no" name="a" value="0" v-model="remember"/>
                             <span>记住密码</span>
                         </p>
                         <p>忘记密码</p>
@@ -51,6 +51,8 @@ export default {
         login_type: 0,
         username:"",
         password:"",
+        // 默认不开启记住密码
+        remember: false,
     }
   },
  
@@ -58,13 +60,36 @@ export default {
     loginhander() {
         this.$axios.post(`${this.$settings.HOST}/user/login/`, {"username": this.username, "password": this.password}).then(response=>{
             console.log(response.data);
-            localStorage.setItem("token", response.data.access)
+            console.log(this.remember);
+            if (this.remember) {
+                // 记住登录
+                sessionStorage.clear();
+                localStorage.setItem("token", response.data.access);
+                localStorage.setItem("id", response.data.id);
+                localStorage.setItem("username", response.data.username);
+            } else {
+                // 未开启记住登录
+                localStorage.clear();
+                sessionStorage.token = response.data.access;
+                sessionStorage.id = response.data.id;
+                sessionStorage.username = response.data.username;
+            }
+            this.$router.go(-1);
         }).catch(error=>{
             console.log(error);
+            this.$message.error("登录失败! 请确认账号密码");
         })
-    }
+    },
+
+    change_remember() {
+        console.log(this.remember);
+        if (this.remember) {
+            this.remember = false;
+        } else {
+            this.remember = true;
+        }
+    },
   },
- 
 };
 </script>
  
