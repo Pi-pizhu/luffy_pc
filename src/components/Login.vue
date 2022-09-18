@@ -59,8 +59,6 @@ export default {
   methods:{
     loginhander() {
         this.$axios.post(`${this.$settings.HOST}/user/login/`, {"username": this.username, "password": this.password}).then(response=>{
-            console.log(response.data);
-            console.log(this.remember);
             if (this.remember) {
                 // 记住登录
                 sessionStorage.clear();
@@ -70,24 +68,24 @@ export default {
             } else {
                 // 未开启记住登录
                 localStorage.clear();
+                console.log('添加token到sessionStorage');
                 sessionStorage.token = response.data.access;
                 sessionStorage.id = response.data.id;
                 sessionStorage.username = response.data.username;
             }
-            this.$router.go(-1);
+            // 页面跳转
+            let self = this
+            this.$alert("登录成功", "路飞学城", {
+                callback(){
+                    self.$router.push("/");
+                }
+            })
+            // this.$message.success('登录成功');
+            // this.$router.push("/");
         }).catch(error=>{
             console.log(error);
             this.$message.error("登录失败! 请确认账号密码");
         })
-    },
-
-    change_remember() {
-        console.log(this.remember);
-        if (this.remember) {
-            this.remember = false;
-        } else {
-            this.remember = true;
-        }
     },
   },
 };

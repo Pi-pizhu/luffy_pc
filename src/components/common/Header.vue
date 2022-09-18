@@ -13,7 +13,28 @@
                 <span v-else><router-link :to="nav.link">{{nav.title}}</router-link></span>
             </li>
           </ul>
-          <div class="login-bar full-right">
+
+          <div v-if="token" class="login-bar full-right">
+            <div class="shop-cart full-left">
+              <span class="shop-cart-total">0</span>
+              <img src="/static/image/cart.svg" alt="">
+              <span><router-link to="/cart">购物车</router-link></span>
+            </div>
+            <div class="login-box login-box1 full-left">
+              <router-link to="">学习中心</router-link>
+              <el-menu width="200" class="member el-menu-demo" mode="horizontal">
+                  <el-submenu index="2">
+                    <template slot="title"><img src="/static/image/logo@2x.png" alt=""></template>
+                    <el-menu-item index="2-1">我的账户</el-menu-item>
+                    <el-menu-item index="2-2">我的订单</el-menu-item>
+                    <el-menu-item index="2-3">我的优惠卷</el-menu-item>
+                    <el-menu-item index="2-3"><span @click="logoutHander">退出登录</span></el-menu-item>
+                  </el-submenu>
+                </el-menu>
+            </div>
+          </div>
+ 
+          <div v-else class="login-bar full-right">
             <div class="shop-cart full-left">
               <img src="/static/image/cart.svg" alt="">
               <span><router-link to="/cart">购物车</router-link></span>
@@ -24,6 +45,7 @@
               <span>注册</span>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -34,19 +56,37 @@
       name: "Header",
       data(){
         return{
+            token: "",
             nav_list: [],
         }
       },
       created() {
+          this.check_user_login();
           this.get_nav();
+        //   this.logoutHander();
       },
       methods: {
+          check_user_login(){
+            this.token = sessionStorage.token || localStorage.token;
+            return this.token;
+          },
+
           get_nav() {
               this.$axios.get(`${this.$settings.HOST}/nav/header/`, {}).then(response => {
                   this.nav_list = response.data;
               }).catch(err => {
                   console.log(err.response)
               });
+          },
+
+          logoutHander(){
+            localStorage.removeItem("token");
+            localStorage.removeItem("user_id");
+            localStorage.removeItem("user_name");
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("user_id");
+            sessionStorage.removeItem("user_name");
+            this.check_user_login();
           }
       }
     }
@@ -116,7 +156,7 @@
   cursor: pointer;
   font-size: 14px;
   height: 28px;
-  width: 88px;
+  width: 90px;
   margin-top: 30px;
   line-height: 32px;
   text-align: center;
@@ -133,7 +173,7 @@
   margin-right: 6px;
 }
 .header .login-bar .login-box{
-  margin-top: 33px;
+  margin-top: 32px;
 }
 .header .login-bar .login-box span{
   color: #4a4a4a;
@@ -141,5 +181,22 @@
 }
 .header .login-bar .login-box span:hover{
   color: #000000;
+}
+.member{
+    display: inline-block;
+    height: 34px;
+    margin-left: 20px;
+}
+.member img{
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.member img:hover{
+  border: 1px solid yellow;
+}
+.header .login-bar .login-box1{
+  margin-top: 16px;
 }
 </style>
