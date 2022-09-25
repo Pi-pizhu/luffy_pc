@@ -35,7 +35,7 @@
                     <input v-model = "password"  type="text" class="pwd" placeholder="短信验证码">
           <button id="get_code">获取验证码</button>
                     <button class="login_btn">登录</button>
-                    <p class="go_login" >没有账号 <span>立即注册</span></p>
+                    <p class="go_login" >没有账号 <router-link to="/user/register">立即注册</router-link></p>
                 </div>
             </div>
         </div>
