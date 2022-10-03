@@ -68,6 +68,7 @@
       methods: {
           check_user_login(){
             this.token = sessionStorage.token || localStorage.token;
+            console.log(this.token);
             return this.token;
           },
 
